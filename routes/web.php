@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserProjectController;
+use App\Http\Controllers\WeeklyPulseController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -8,7 +11,10 @@ Route::inertia('/', 'welcome', [
 ])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'show'])->name('dashboard');
+    Route::post('user-projects', [UserProjectController::class, 'store'])->name('user-projects.store');
+    Route::put('weekly-pulses/{weeklyPulse}', [WeeklyPulseController::class, 'update'])->name('weekly-pulses.update');
+    Route::post('weekly-pulses/{weeklyPulse}/submit', [WeeklyPulseController::class, 'submit'])->name('weekly-pulses.submit');
 });
 
 require __DIR__.'/settings.php';

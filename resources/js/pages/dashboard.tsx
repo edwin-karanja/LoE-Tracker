@@ -1,8 +1,11 @@
+import type { ComponentProps } from 'react';
 import DashboardShowcase from '@/pages/Dashboard/index';
 import { dashboard } from '@/routes';
 
-export default function Dashboard() {
-    return <DashboardShowcase />;
+type DashboardProps = ComponentProps<typeof DashboardShowcase>;
+
+export default function Dashboard(props: DashboardProps) {
+    return <DashboardShowcase {...props} />;
 }
 
 Dashboard.layout = {
