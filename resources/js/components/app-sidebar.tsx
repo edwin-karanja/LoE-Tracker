@@ -4,8 +4,6 @@ import {
     CalendarRange,
     HelpCircle,
     LayoutGrid,
-    Send,
-    TimerReset,
 } from 'lucide-react';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -20,7 +18,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, myAllocations } from '@/routes';
+import { dashboard, helpCenter, myAllocations } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -49,7 +47,7 @@ const quickActionItems: NavItem[] = [
     // },
     {
         title: 'Help Center',
-        href: dashboard(),
+        href: helpCenter(),
         icon: HelpCircle,
     },
 ];
