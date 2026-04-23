@@ -38,6 +38,11 @@ class User extends Authenticatable
         return $this->hasMany(UserProject::class);
     }
 
+    public function monthlyAllocations(): HasMany
+    {
+        return $this->hasMany(MonthlyAllocation::class);
+    }
+
     public function weeklyPulses(): HasMany
     {
         return $this->hasMany(WeeklyPulse::class);

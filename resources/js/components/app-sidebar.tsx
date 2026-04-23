@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     ArrowUpRight,
     CalendarRange,
@@ -20,33 +20,33 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, myAllocations } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Overview',
+        title: 'LoE Tracker',
         href: dashboard(),
         icon: LayoutGrid,
     },
     {
         title: 'My Allocations',
-        href: dashboard(),
+        href: myAllocations(),
         icon: CalendarRange,
     },
-    {
-        title: 'History',
-        href: dashboard(),
-        icon: TimerReset,
-    },
+    // {
+    //     title: 'History',
+    //     href: dashboard(),
+    //     icon: TimerReset,
+    // },
 ];
 
 const quickActionItems: NavItem[] = [
-    {
-        title: 'Submit Weekly LoE',
-        href: dashboard(),
-        icon: Send,
-    },
+    // {
+    //     title: 'Submit Weekly LoE',
+    //     href: dashboard(),
+    //     icon: Send,
+    // },
     {
         title: 'Help Center',
         href: dashboard(),
@@ -55,6 +55,10 @@ const quickActionItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const currentPath = usePage().url.split('?')[0];
+    const isCurrentItem = (href: NavItem['href']) =>
+        currentPath === (typeof href === 'string' ? href : href.url);
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader className="gap-4 px-3 py-4">
@@ -94,7 +98,7 @@ export function AppSidebar() {
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         asChild
-                                        isActive={item.title === 'Overview'}
+                                        isActive={isCurrentItem(item.href)}
                                         tooltip={{ children: item.title }}
                                         className="h-11 rounded-xl px-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 data-[active=true]:border data-[active=true]:border-slate-200 data-[active=true]:bg-white data-[active=true]:text-slate-900 data-[active=true]:shadow-sm"
                                     >
@@ -111,7 +115,7 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
 
-                <SidebarGroup className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                <SidebarGroup className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-3 mb-5">
                     <SidebarGroupLabel className="px-0 text-[0.7rem] font-semibold tracking-[0.24em] text-slate-500 uppercase">
                         Quick Actions
                     </SidebarGroupLabel>
