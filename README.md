@@ -61,7 +61,7 @@ This script will:
 4. Run database migrations
 5. Install Node dependencies and build front-end assets for production
 
-Then start the app (see [Local development](#local-development)).
+Run `php artisan db:seed` to load [demo data](#database-seeding) (users, projects, allocations, and sample weekly pulses), then start the app (see [Local development](#local-development)).
 
 ## Manual setup
 
@@ -104,6 +104,35 @@ If you prefer step-by-step control:
 
 6. **Application URL**  
    Set `APP_URL` in `.env` to match how you access the site (e.g. `http://loe-tracker.test` with Laravel Herd, or `http://127.0.0.1:8000` with `php artisan serve`).
+
+`composer run setup` runs migrations but does **not** load seed data. After your database exists and migrations have run, load the demo data with:
+
+```bash
+php artisan db:seed
+```
+
+## Database seeding
+
+Seed the database after migrations so you have demo users, projects, monthly allocations, and weekly pulse history to explore the app:
+
+```bash
+php artisan db:seed
+```
+
+To drop all tables, re-run migrations, and seed in one step (useful for a clean local reset):
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+### Demo logins
+
+Password for all demo accounts: `password`
+
+| Role | Email |
+| --- | --- |
+| Admin | `admin@example.com` |
+| Non-admin (10 accounts) | `user1@example.com` through `user10@example.com` |
 
 ## Local development
 
