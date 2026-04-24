@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowRight,
+    ChartNoAxesCombined,
     ClipboardList,
     FolderKanban,
     Percent,
@@ -10,6 +11,7 @@ import { dashboard as adminDashboard } from '@/routes/admin';
 import { index as allocationsIndex } from '@/routes/admin/allocations';
 import { index as loeSubmissionsIndex } from '@/routes/admin/loe-submissions';
 import { index as projectsIndex } from '@/routes/admin/projects';
+import { index as reportsIndex } from '@/routes/admin/reports';
 
 type Props = {
     summary: {
@@ -44,6 +46,14 @@ const adminCards = [
         icon: ClipboardList,
         accent: 'border-l-sky-500 hover:border-sky-200 hover:bg-sky-50/40',
         iconTone: 'bg-sky-50 text-sky-700 group-hover:bg-sky-100',
+    },
+    {
+        title: 'Reports',
+        description: 'View allocation, project load, member activity, and submission trends in one place.',
+        href: reportsIndex(),
+        icon: ChartNoAxesCombined,
+        accent: 'border-l-indigo-500 hover:border-indigo-200 hover:bg-indigo-50/40',
+        iconTone: 'bg-indigo-50 text-indigo-700 group-hover:bg-indigo-100',
     },
 ];
 
@@ -125,7 +135,7 @@ export default function AdminDashboardIndex({ summary }: Props) {
                             </div>
                         </div>
 
-                        <div className="grid gap-2.5 lg:grid-cols-3">
+                        <div className="grid gap-2.5 lg:grid-cols-2 xl:grid-cols-4">
                             {adminCards.map((card) => (
                                 <Link
                                     key={card.title}

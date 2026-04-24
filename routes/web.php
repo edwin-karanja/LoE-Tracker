@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminLoeSubmissionController;
 use App\Http\Controllers\Admin\AdminMonthlyAllocationController;
 use App\Http\Controllers\Admin\AdminProjectController;
+use App\Http\Controllers\Admin\AdminReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HelpCenterController;
 use App\Http\Controllers\MyAllocationController;
@@ -34,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::put('allocations/{month}', [AdminMonthlyAllocationController::class, 'update'])->name('allocations.update');
             Route::get('loe-submissions', [AdminLoeSubmissionController::class, 'index'])->name('loe-submissions.index');
             Route::get('loe-submissions/{weeklyPulse}', [AdminLoeSubmissionController::class, 'show'])->name('loe-submissions.show');
+            Route::get('reports', [AdminReportController::class, 'index'])->name('reports.index');
         });
 });
 
