@@ -632,7 +632,7 @@ export default function DashboardShowcase({
                                                                                                 .value,
                                                                                         )
                                                                                     }
-                                                                                    className="h-8 w-full rounded-lg border border-slate-200 bg-white px-2 pr-6 text-center text-sm font-semibold text-emerald-900 transition outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-100"
+                                                                                    className="h-8 w-full rounded-lg border border-slate-200 bg-white px-2 pr-6 text-center text-sm font-semibold text-emerald-900 transition outline-none [-moz-appearance:textfield] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-100 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                                                                     aria-label={`${row.project} allocation percentage`}
                                                                                 />
                                                                                 <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-xs font-semibold text-slate-400">
