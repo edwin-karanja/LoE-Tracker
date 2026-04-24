@@ -9,6 +9,34 @@ Built with **Laravel 13**, **Inertia.js** (React 19), **Tailwind CSS 4**, and **
 - **Team users**: Dashboard, help center, personal allocations, project assignments, and weekly LOE submission flows.
 - **Admins** (`is_admin` on the user): Admin dashboard, project CRUD, monthly allocations, LOE submission review, and reports.
 
+## How the system is used
+
+### Non-admin users
+
+Regular users use the application to manage and submit their weekly level of effort.
+
+- Open the **dashboard** to review the current reporting week.
+- Update **weekly LoE allocations** for each assigned project.
+- Add project entries when they are available to the user for the current week.
+- Review personal **allocations** and supporting guidance in the **help center**.
+- Save work as a **draft weekly pulse** and submit it before the reporting deadline.
+
+### Admin users
+
+Admin users do everything a regular user can do, plus they manage the operational setup for the rest of the team.
+
+- Use the **admin dashboard** to monitor the state of reporting.
+- Create and maintain **projects** in the admin area.
+- Configure **monthly allocations** that guide expected LoE distribution.
+- Review **weekly LoE submissions** from other users.
+- Access **reports** to inspect reporting data across the system.
+
+### Access model
+
+- Users must be authenticated to access the main application.
+- The standard user experience is available to any signed-in, verified user.
+- The **admin area** (`/admin`) is restricted to users with `is_admin = true`.
+
 ## Requirements
 
 - **PHP** 8.3+ with extensions required by Laravel (e.g. `mbstring`, `openssl`, `pdo`, `fileinfo`, `ctype`, `json`, `tokenizer`, `xml`)
