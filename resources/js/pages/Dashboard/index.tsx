@@ -13,7 +13,6 @@ import {
     CircleHelp,
     Copy,
     FolderKanban,
-    Info,
     Plus,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -284,19 +283,19 @@ export default function DashboardShowcase({
             <Head title="Dashboard" />
 
             <div className="flex flex-1 flex-col bg-stone-100">
-                <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 lg:px-8">
+                <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4 md:px-5 md:py-4 lg:px-8">
                     {shouldShowSubmissionReminder ? (
                         <section>
-                            <div className="flex w-full items-start gap-4 rounded-[1.5rem] border border-amber-300 bg-gradient-to-r from-amber-50 via-white to-red-50 px-5 py-4 shadow-sm">
-                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
-                                    <AlertTriangle className="size-5" />
+                            <div className="flex w-full items-center gap-2.5 rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-white to-red-50 px-3 py-2 sm:gap-3 sm:px-4 sm:py-2.5">
+                                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700 sm:size-9 sm:rounded-xl">
+                                    <AlertTriangle className="size-4 sm:size-[1.125rem]" />
                                 </div>
-                                <div className="min-w-0 space-y-1.5">
-                                    <p className="text-base font-semibold text-slate-900 md:text-lg">
+                                <div className="min-w-0 space-y-0.5">
+                                    <p className="text-sm font-semibold text-slate-900 sm:text-[0.9375rem]">
                                         Your weekly pulse is still waiting for
                                         submission.
                                     </p>
-                                    <p className="max-w-4xl text-sm leading-7 text-slate-600 md:text-base">
+                                    <p className="max-w-4xl text-xs leading-snug text-slate-600 sm:text-sm sm:leading-relaxed">
                                         The Thursday 5:00 PM deadline has
                                         passed, and this week&apos;s pulse is
                                         still in draft. Review your entries and
@@ -307,53 +306,44 @@ export default function DashboardShowcase({
                         </section>
                     ) : null}
 
-                    <section className="space-y-3">
-                        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-                            <div className="space-y-1.5">
-                                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-[2.55rem]">
+                    <section className="space-y-2">
+                        <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch lg:gap-4 xl:gap-5">
+                            <div className="shrink-0 space-y-0.5 lg:max-w-[18rem] lg:pt-0.5 xl:max-w-xs">
+                                <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
                                     Welcome back, {userName}
                                 </h1>
-                                <p className="text-sm text-slate-500 md:text-base">
+                                <p className="text-xs leading-snug text-slate-500 sm:text-sm">
                                     Review and update your Level of Effort for
                                     the current reporting week.
                                 </p>
                             </div>
 
-                            <ReportingPeriodPicker
-                                defaultMonth={
-                                    parseISO(reportingPeriod.monthStartDate)
-                                }
-                                reportingPeriod={selectedReportingRange}
-                                onSelect={handleReportingPeriodSelect}
-                            />
-                        </div>
-
-                        <div className="grid gap-2.5 xl:grid-cols-[minmax(0,1.55fr)_minmax(13rem,0.72fr)_minmax(13rem,0.72fr)]">
-                            <article className="rounded-[1.1rem] border border-slate-200 bg-white p-3.5 shadow-sm">
-                                <div className="mb-3 flex items-start justify-between gap-3">
-                                    <div>
-                                        <div className="flex items-center gap-1.5">
-                                            <h2 className="text-lg font-semibold tracking-tight text-slate-900 md:text-[1.35rem]">
+                            <div className="grid min-w-0 flex-1 grid-cols-1 gap-2 md:grid-cols-2 md:items-stretch xl:grid-cols-[minmax(0,1.4fr)_minmax(0,0.9fr)_minmax(0,0.9fr)]">
+                            <article className="flex flex-col rounded-xl border border-slate-200 bg-white p-2.5 sm:p-3">
+                                <div className="mb-2 flex items-start justify-between gap-2">
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-1">
+                                            <h2 className="text-sm font-semibold tracking-tight text-slate-900 sm:text-base">
                                                 Monthly Allocation Progress
                                             </h2>
                                             <TooltipHint content="This shows the saved allocation total for the currently selected week and helps you spot whether your LoE is on track for the month." />
                                         </div>
-                                        <p className="mt-0.5 text-sm text-slate-500">
+                                        <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">
                                             Target: 160 Hours / 100%
                                         </p>
                                     </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[0.72rem] font-semibold text-emerald-700 md:text-xs">
+                                    <div className="flex shrink-0 items-center gap-1">
+                                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[0.65rem] font-semibold text-emerald-700 sm:text-xs">
                                             On Track
                                         </span>
                                         <TooltipHint content="A quick health signal for the currently selected week based on the saved LoE total shown below." />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between text-[0.72rem] font-semibold tracking-[0.16em] text-slate-800 uppercase md:text-xs">
+                                <div className="mt-auto space-y-1">
+                                    <div className="flex items-center justify-between text-[0.65rem] font-semibold tracking-[0.12em] text-slate-800 uppercase sm:text-xs sm:tracking-[0.16em]">
                                         <span>Current Status</span>
-                                        <div className="flex items-center gap-1.5">
+                                        <div className="flex items-center gap-1">
                                             <span className="text-emerald-700">
                                                 {currentWeekTotalPercent}%
                                                 Complete
@@ -361,7 +351,7 @@ export default function DashboardShowcase({
                                             <TooltipHint content="This number reflects the saved total allocation for the selected week in the database, not unsaved edits." />
                                         </div>
                                     </div>
-                                    <div className="h-2.5 overflow-hidden rounded-full bg-slate-200">
+                                    <div className="h-2 overflow-hidden rounded-full bg-slate-200">
                                         <div
                                             className="h-full rounded-full bg-emerald-700"
                                             style={{
@@ -375,64 +365,89 @@ export default function DashboardShowcase({
                                 </div>
                             </article>
 
-                            <article className="rounded-[1.1rem] border border-slate-200 bg-white p-3.5 shadow-sm">
-                                <div className="mb-4 flex size-8 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-                                    <FolderKanban className="size-4" />
+                            <article className="flex h-full min-h-0 items-stretch rounded-xl border border-slate-200 bg-white p-2 shadow-sm sm:p-2.5">
+                                <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-2.5">
+                                    <div className="flex size-6 shrink-0 items-center justify-center self-center rounded-md bg-slate-100 text-slate-700 sm:size-7 sm:rounded-lg">
+                                        <FolderKanban className="size-3.5" />
+                                    </div>
+                                    <div className="flex min-w-0 flex-1 items-center justify-between gap-1.5">
+                                        <p className="inline-flex min-w-0 items-baseline gap-2 sm:gap-2.5">
+                                            <span className="text-2xl font-semibold leading-none tracking-tight text-slate-900 tabular-nums sm:text-3xl">
+                                                {summary.activeProjectsCount}
+                                            </span>
+                                            <span className="whitespace-nowrap text-[0.64rem] font-semibold tracking-[0.12em] text-slate-500 uppercase sm:text-[0.65rem] sm:tracking-[0.14em]">
+                                                Active projects
+                                            </span>
+                                        </p>
+                                        <div className="shrink-0 self-center">
+                                            <TooltipHint content="Only projects that have LoE recorded in the selected month appear in the tracker below." />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-1.5">
-                                    <p className="text-3xl font-semibold tracking-tight text-slate-900">
-                                        {summary.activeProjectsCount}
-                                    </p>
-                                    <TooltipHint content="Only projects that have LoE recorded in the selected month appear in the tracker below." />
-                                </div>
-                                <p className="mt-1 text-[0.72rem] font-semibold tracking-[0.16em] text-slate-500 uppercase md:text-xs">
-                                    Active Projects
-                                </p>
                             </article>
 
-                            <SubmissionDeadlineSection
-                                deadlineAt={submissionDeadline.at}
-                                isOverdue={submissionDeadline.isOverdue}
-                            />
+                            <div className="md:col-span-2 xl:col-span-1">
+                                <SubmissionDeadlineSection
+                                    deadlineAt={submissionDeadline.at}
+                                    isOverdue={submissionDeadline.isOverdue}
+                                />
+                            </div>
+                            </div>
                         </div>
                     </section>
 
-                    <section className="space-y-4">
-                        <article className="overflow-hidden rounded-[1.8rem] border border-slate-200/80 bg-white shadow-sm">
-                            <div className="flex flex-col gap-4 border-b border-slate-200/80 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
-                                <div className="space-y-1">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        <div className="flex items-center gap-1.5">
-                                            <h2 className="text-xl font-semibold tracking-tight text-slate-950">
-                                                Weekly LoE Tracker
-                                            </h2>
-                                            <TooltipHint content="Use the highlighted week column to enter or adjust LoE percentages. Changing the reporting period reloads the tracker from the backend for that selected week." />
-                                        </div>
-                                        <span
-                                            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${pulseStatusClasses}`}
-                                        >
-                                            {pulseStatusLabel}
-                                        </span>
-                                        {isDirty ? (
-                                            <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">
-                                                Unsaved changes
+                    <section className="space-y-3">
+                        <article className="overflow-hidden rounded-2xl border border-slate-200/80 border-t-[3px] border-t-teal-500/50 bg-gradient-to-b from-slate-50/60 to-white shadow-sm">
+                            <div className="space-y-3 border-b border-slate-200/80 px-4 py-3.5 sm:px-5">
+                                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
+                                    <div className="min-w-0 space-y-1">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <div className="flex items-center gap-1.5">
+                                                <h2 className="text-lg font-semibold tracking-tight text-slate-950 sm:text-xl">
+                                                    Weekly LoE Tracker
+                                                </h2>
+                                                <TooltipHint content="Use the calendar above the table to change which week you are viewing. The highlighted column matches the selected reporting week. Changing the week reloads data from the server." />
+                                            </div>
+                                            <span
+                                                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${pulseStatusClasses}`}
+                                            >
+                                                {pulseStatusLabel}
                                             </span>
+                                            {isDirty ? (
+                                                <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800">
+                                                    Unsaved changes
+                                                </span>
+                                            ) : null}
+                                        </div>
+                                        <p className="text-sm text-slate-500">
+                                            Adjust and record your level of
+                                            effort per project for the week
+                                            shown below.
+                                        </p>
+                                        {!reportingPeriod.isCurrentWeek ? (
+                                            <p className="text-xs font-medium text-amber-700">
+                                                Saving and submitting are only
+                                                available for the current
+                                                reporting week.
+                                            </p>
                                         ) : null}
                                     </div>
-                                    <p className="text-sm text-slate-500">
-                                        Adjust and record your level of effort
-                                        per project for the current week.
-                                    </p>
-                                    {!reportingPeriod.isCurrentWeek ? (
-                                        <p className="text-xs font-medium text-amber-700">
-                                            Saving and submitting are only
-                                            available for the current reporting
-                                            week.
-                                        </p>
-                                    ) : null}
+                                    <div className="flex w-full min-w-0 flex-col gap-1 sm:max-w-[17rem] lg:shrink-0 lg:items-end">
+                                        <span className="text-[0.65rem] font-semibold tracking-[0.18em] text-slate-500 uppercase">
+                                            Select reporting week
+                                        </span>
+                                        <ReportingPeriodPicker
+                                            defaultMonth={parseISO(
+                                                reportingPeriod.monthStartDate,
+                                            )}
+                                            reportingPeriod={selectedReportingRange}
+                                            onSelect={handleReportingPeriodSelect}
+                                            size="compact"
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-wrap gap-3">
+                                <div className="flex flex-wrap gap-2.5 border-t border-slate-200/60 pt-3">
                                     <div className="flex items-center gap-1.5">
                                         <AddProjectDialog
                                             availableProjects={
@@ -483,10 +498,10 @@ export default function DashboardShowcase({
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="min-w-full text-left">
+                                <table className="min-w-full text-left text-sm">
                                     <thead>
-                                        <tr className="border-b border-slate-200 bg-slate-50/90 text-xs tracking-[0.22em] text-slate-500 uppercase">
-                                            <th className="px-6 py-4 font-semibold">
+                                        <tr className="border-b border-slate-200 bg-slate-50/90 text-[0.65rem] tracking-[0.16em] text-slate-500 uppercase">
+                                            <th className="px-3 py-2 font-semibold sm:px-4">
                                                 <div className="flex items-center gap-1.5">
                                                     <span>
                                                         Project &amp; stream
@@ -506,14 +521,14 @@ export default function DashboardShowcase({
                                                 return (
                                                     <th
                                                         key={week.start.toISOString()}
-                                                        className={`px-4 py-4 text-center align-top font-semibold ${isSelected
+                                                        className={`px-2 py-2 text-center align-top font-semibold sm:px-3 ${isSelected
                                                             ? 'border-x border-slate-200 bg-blue-50 text-blue-700'
                                                             : ''
                                                             }`}
                                                     >
-                                                        <div className="flex items-center justify-center gap-1.5">
+                                                        <div className="flex items-center justify-center gap-1">
                                                             <span className="font-semibold text-teal-600">
-                                                                Week {isoWeekNumber}
+                                                                W{isoWeekNumber}
                                                             </span>
                                                             {weekIndex === 0 ? (
                                                                 <TooltipHint content={`Shows saved LoE for ${format(
@@ -537,12 +552,12 @@ export default function DashboardShowcase({
                                                     key={row.projectId}
                                                     className="align-middle"
                                                 >
-                                                    <td className="px-6 py-5">
-                                                        <div className="flex flex-col gap-1">
-                                                            <span className="font-semibold text-slate-950">
+                                                    <td className="px-3 py-2 sm:px-4">
+                                                        <div className="flex flex-col gap-0.5">
+                                                            <span className="text-[0.8125rem] font-semibold leading-tight text-slate-950">
                                                                 {row.project}
                                                             </span>
-                                                            <span className="text-sm text-slate-500">
+                                                            <span className="text-xs leading-snug text-slate-500">
                                                                 {row.stream}
                                                             </span>
                                                         </div>
@@ -572,12 +587,12 @@ export default function DashboardShowcase({
                                                                 return (
                                                                     <td
                                                                         key={`${row.projectId}-${week.start.toISOString()}`}
-                                                                        className="border-x border-slate-200 bg-slate-50/70 px-4 py-5"
+                                                                        className="border-x border-slate-200 bg-slate-50/70 px-2 py-2 sm:px-3"
                                                                     >
-                                                                        <div className="flex items-center justify-center gap-3">
+                                                                        <div className="flex items-center justify-center gap-1.5 sm:gap-2">
                                                                             <button
                                                                                 type="button"
-                                                                                className="flex size-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50"
+                                                                                className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50"
                                                                                 aria-label={`Decrease ${row.project} allocation`}
                                                                                 disabled={
                                                                                     !canEditSelectedWeek
@@ -590,11 +605,11 @@ export default function DashboardShowcase({
                                                                                     )
                                                                                 }
                                                                             >
-                                                                                <span className="text-lg leading-none">
+                                                                                <span className="text-base leading-none">
                                                                                     -
                                                                                 </span>
                                                                             </button>
-                                                                            <div className="relative w-20">
+                                                                            <div className="relative w-[4.25rem] shrink-0">
                                                                                 <input
                                                                                     type="number"
                                                                                     min="0"
@@ -617,16 +632,16 @@ export default function DashboardShowcase({
                                                                                                 .value,
                                                                                         )
                                                                                     }
-                                                                                    className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 pr-7 text-center text-base font-semibold text-emerald-900 transition outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                                                                                    className="h-8 w-full rounded-lg border border-slate-200 bg-white px-2 pr-6 text-center text-sm font-semibold text-emerald-900 transition outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-100"
                                                                                     aria-label={`${row.project} allocation percentage`}
                                                                                 />
-                                                                                <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm font-semibold text-slate-400">
+                                                                                <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-xs font-semibold text-slate-400">
                                                                                     %
                                                                                 </span>
                                                                             </div>
                                                                             <button
                                                                                 type="button"
-                                                                                className="flex size-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50"
+                                                                                className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50"
                                                                                 aria-label={`Increase ${row.project} allocation`}
                                                                                 disabled={
                                                                                     !canEditSelectedWeek
@@ -639,17 +654,19 @@ export default function DashboardShowcase({
                                                                                     )
                                                                                 }
                                                                             >
-                                                                                <Plus className="size-4" />
+                                                                                <Plus className="size-3.5" />
                                                                             </button>
                                                                         </div>
-                                                                        <div className="mt-2 flex items-center justify-center gap-1.5">
-                                                                            <span className="text-[0.68rem] font-medium text-slate-400">
-                                                                                Edit this week
-                                                                            </span>
-                                                                            {rowIndex === 0 ? (
+                                                                        {rowIndex ===
+                                                                        0 ? (
+                                                                            <div className="mt-1.5 flex items-center justify-center gap-1">
+                                                                                <span className="text-[0.62rem] font-medium text-slate-400">
+                                                                                    Editable
+                                                                                    week
+                                                                                </span>
                                                                                 <TooltipHint content="Use the minus and plus buttons to adjust in 5% steps, or type directly into the field. Save changes to store the draft in the backend." />
-                                                                            ) : null}
-                                                                        </div>
+                                                                            </div>
+                                                                        ) : null}
                                                                     </td>
                                                                 );
                                                             }
@@ -657,7 +674,7 @@ export default function DashboardShowcase({
                                                             return (
                                                                 <td
                                                                     key={`${row.projectId}-${week.start.toISOString()}`}
-                                                                    className={`px-4 py-5 text-center text-sm font-medium ${value ===
+                                                                    className={`px-2 py-2 text-center text-xs font-medium sm:px-3 sm:text-sm ${value ===
                                                                         null
                                                                         ? 'text-slate-300'
                                                                         : 'text-slate-400'
@@ -680,7 +697,7 @@ export default function DashboardShowcase({
                                                         reportingWeeks.length +
                                                         1
                                                     }
-                                                    className="px-6 py-12 text-center text-sm text-slate-500"
+                                                    className="px-4 py-8 text-center text-sm text-slate-500"
                                                 >
                                                     No active projects are
                                                     assigned for this reporting
@@ -691,7 +708,7 @@ export default function DashboardShowcase({
                                     </tbody>
                                     <tfoot>
                                         <tr className="border-t border-slate-200 bg-slate-50/90">
-                                            <td className="px-6 py-4 font-semibold text-slate-950">
+                                            <td className="px-3 py-2 font-semibold text-slate-950 sm:px-4">
                                                 <div className="flex items-center gap-1.5">
                                                     <span>Total allocation</span>
                                                     <TooltipHint content="This footer sums all project allocations for each displayed week. The highlighted total includes any unsaved edits in the active week column." />
@@ -721,7 +738,7 @@ export default function DashboardShowcase({
                                                     return (
                                                         <td
                                                             key={`total-${week.start.toISOString()}`}
-                                                            className={`px-4 py-4 text-center text-sm ${isSelected
+                                                            className={`px-2 py-2 text-center text-xs font-medium sm:px-3 sm:text-sm ${isSelected
                                                                 ? 'border-x border-slate-200 bg-blue-50 font-bold text-blue-700'
                                                                 : total ===
                                                                     0
@@ -738,7 +755,7 @@ export default function DashboardShowcase({
                                             )}
                                         </tr>
                                         <tr className="border-t border-slate-200 bg-white">
-                                            <td className="px-6 py-4 align-top font-medium text-slate-500">
+                                            <td className="px-3 py-2 align-top text-xs font-medium text-slate-500 sm:px-4 sm:text-sm">
                                                 Weekly summary
                                             </td>
                                             {reportingWeeks.map((week) => {
@@ -764,7 +781,7 @@ export default function DashboardShowcase({
                                                 return (
                                                     <td
                                                         key={`summary-${week.start.toISOString()}`}
-                                                        className="px-4 py-4 align-top text-center"
+                                                        className="px-2 py-2 align-top text-center sm:px-3"
                                                     >
                                                         {hasWeeklySummary ? (
                                                             <div className="mx-auto w-full flex max-w-[12rem] flex-col items-center space-y-1">

@@ -2,7 +2,7 @@
 
 return [
     'submission_deadline' => [
-        'day_offset' => 3,
+        'day_offset' => 4,
         'hour' => 17,
         'minute' => 0,
     ],

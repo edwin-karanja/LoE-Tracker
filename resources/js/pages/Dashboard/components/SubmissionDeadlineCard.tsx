@@ -22,8 +22,8 @@ export function SubmissionDeadlineCard({
 
     if (!hasValidDeadline) {
         return (
-            <article className="rounded-[1.1rem] border border-slate-200 bg-white p-3.5 text-slate-900 shadow-sm">
-                <p className="text-sm font-medium text-slate-600">
+            <article className="h-full rounded-xl border border-slate-200 bg-white p-2.5 text-slate-900 shadow-sm sm:p-3">
+                <p className="text-xs font-medium text-slate-600 sm:text-sm">
                     Deadline unavailable right now.
                 </p>
             </article>
@@ -41,24 +41,24 @@ export function SubmissionDeadlineCard({
 
     if (!currentTime) {
         return (
-            <article className="rounded-[1.1rem] border border-emerald-200/80 bg-gradient-to-br from-emerald-50 via-green-50 to-lime-50 p-3.5 text-slate-900 shadow-sm">
-                <div className="flex items-start justify-between gap-3">
-                    <div className="flex size-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200 ring-inset">
+            <article className="h-full rounded-xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50 via-green-50 to-lime-50 p-2.5 text-slate-900 shadow-sm sm:p-3">
+                <div className="flex items-start justify-between gap-2">
+                    <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200 ring-inset sm:size-8 sm:rounded-xl">
                         <Clock3 className="size-3.5" />
                     </div>
-                    <span className="rounded-full border border-emerald-200 bg-white/70 px-2 py-1 text-[0.58rem] font-semibold tracking-[0.18em] text-emerald-800 uppercase">
+                    <span className="rounded-full border border-emerald-200 bg-white/70 px-1.5 py-0.5 text-[0.55rem] font-semibold tracking-[0.14em] text-emerald-800 uppercase sm:px-2 sm:py-1 sm:text-[0.58rem] sm:tracking-[0.18em]">
                         Deadline
                     </span>
                 </div>
 
-                <div className="mt-3.5 space-y-1.5">
-                    <p className="text-[1.1rem] font-semibold tracking-tight text-slate-900">
+                <div className="mt-2 space-y-0.5 sm:mt-2.5 sm:space-y-1">
+                    <p className="text-base font-semibold tracking-tight text-slate-900 sm:text-[1.1rem]">
                         {format(resolvedDeadline, 'EEE h:mm a')}
                     </p>
-                    <p className="text-[0.62rem] font-semibold tracking-[0.16em] text-slate-500 uppercase">
+                    <p className="text-[0.6rem] font-semibold tracking-[0.12em] text-slate-500 uppercase sm:text-[0.62rem] sm:tracking-[0.16em]">
                         Deadline
                     </p>
-                    <p className="text-xs text-slate-600">
+                    <p className="text-[0.7rem] leading-snug text-slate-600 sm:text-xs">
                         Due {format(resolvedDeadline, 'EEE, MMM d')} at{' '}
                         {format(resolvedDeadline, 'h:mm a')}.
                     </p>
@@ -70,29 +70,29 @@ export function SubmissionDeadlineCard({
     const countdown = getTimeDifference(resolvedDeadline, currentTime);
 
     return (
-        <article className="rounded-[1.1rem] border border-emerald-200/80 bg-gradient-to-br from-emerald-50 via-green-50 to-lime-50 p-3.5 text-slate-900 shadow-sm">
-            <div className="flex items-start justify-between gap-3">
-                <div className="flex size-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200 ring-inset">
+        <article className="h-full rounded-xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50 via-green-50 to-lime-50 p-2.5 text-slate-900 shadow-sm sm:p-3">
+            <div className="flex items-start justify-between gap-2">
+                <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200 ring-inset sm:size-8 sm:rounded-xl">
                     <Clock3 className="size-3.5" />
                 </div>
-                <span className="rounded-full border border-emerald-200 bg-white/70 px-2 py-1 text-[0.58rem] font-semibold tracking-[0.18em] text-emerald-800 uppercase">
+                <span className="rounded-full border border-emerald-200 bg-white/70 px-1.5 py-0.5 text-[0.55rem] font-semibold tracking-[0.12em] text-emerald-800 uppercase sm:px-2 sm:py-1 sm:text-[0.58rem] sm:tracking-[0.18em]">
                     Live countdown
                 </span>
             </div>
 
-            <div className="mt-3.5 space-y-1.5">
-                <div className="flex items-end justify-between gap-3">
-                    <p className="text-[1rem] font-semibold tracking-tight text-slate-900">
+            <div className="mt-2 space-y-0.5 sm:mt-2.5 sm:space-y-1">
+                <div className="flex flex-wrap items-end justify-between gap-x-2 gap-y-0.5">
+                    <p className="text-sm font-semibold tracking-tight text-slate-900 sm:text-base">
                         {formatCountdown(countdown)}
                     </p>
-                    <span className="rounded-full bg-emerald-100 px-2 py-1 text-[0.62rem] font-semibold tracking-[0.18em] text-emerald-800 uppercase">
+                    <span className="shrink-0 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[0.58rem] font-semibold tracking-[0.1em] text-emerald-800 uppercase sm:px-2 sm:py-1 sm:tracking-[0.18em]">
                         {format(resolvedDeadline, 'EEE h:mm a')}
                     </span>
                 </div>
-                <p className="text-[0.62rem] font-semibold tracking-[0.16em] text-slate-500 uppercase">
+                <p className="text-[0.6rem] font-semibold tracking-[0.12em] text-slate-500 uppercase sm:text-[0.62rem] sm:tracking-[0.16em]">
                     Deadline
                 </p>
-                <p className="text-xs text-slate-600">
+                <p className="text-[0.7rem] leading-snug text-slate-600 sm:text-xs">
                     Due {format(resolvedDeadline, 'EEE, MMM d')} at{' '}
                     {format(resolvedDeadline, 'h:mm a')}.
                 </p>
