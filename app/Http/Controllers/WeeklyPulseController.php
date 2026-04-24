@@ -15,6 +15,10 @@ class WeeklyPulseController extends Controller
         UpdateWeeklyPulseRequest $request,
         WeeklyPulse $weeklyPulse,
     ): RedirectResponse {
+        $validated = $request->validate([
+            'week' => ['nullable', 'date_format:Y-m-d'],
+        ]);
+
         abort_unless($weeklyPulse->user?->is($request->user()), 403);
 
         if ($weeklyPulse->status === WeeklyPulse::STATUS_SUBMITTED) {
@@ -51,20 +55,32 @@ class WeeklyPulseController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Weekly pulse saved.')]);
 
-        return to_route('dashboard');
+        return redirect()->to(route('dashboard', [
+            'week' => $validated['week'] ?? $weeklyPulse->week_start_date->toDateString(),
+        ]));
     }
 
     public function submit(WeeklyPulse $weeklyPulse): RedirectResponse
     {
+        $validated = request()->validate([
+            'week' => ['nullable', 'date_format:Y-m-d'],
+            'weekly_summary' => ['nullable', 'string', 'max:5000'],
+        ]);
+
         abort_unless($weeklyPulse->user?->is(request()->user()), 403);
 
         $weeklyPulse->update([
             'status' => WeeklyPulse::STATUS_SUBMITTED,
             'submitted_at' => now(),
+            'weekly_summary' => blank($validated['weekly_summary'] ?? null)
+                ? null
+                : $validated['weekly_summary'],
         ]);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Weekly pulse submitted.')]);
 
-        return to_route('dashboard');
+        return redirect()->to(route('dashboard', [
+            'week' => $validated['week'] ?? $weeklyPulse->week_start_date->toDateString(),
+        ]));
     }
 }

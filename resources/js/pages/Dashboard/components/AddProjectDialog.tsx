@@ -21,9 +21,15 @@ type AvailableProject = {
 
 type AddProjectDialogProps = {
     availableProjects: AvailableProject[];
+    canAddProject: boolean;
+    reportingWeekStartDate: string;
 };
 
-export function AddProjectDialog({ availableProjects }: AddProjectDialogProps) {
+export function AddProjectDialog({
+    availableProjects,
+    canAddProject,
+    reportingWeekStartDate,
+}: AddProjectDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
@@ -46,11 +52,14 @@ export function AddProjectDialog({ availableProjects }: AddProjectDialogProps) {
         }
 
         router.post(
-            storeUserProject.url(),
+            storeUserProject.url({
+                query: { week: reportingWeekStartDate },
+            }),
             {
                 project_id: Number(selectedProject),
             },
             {
+                preserveState: false,
                 onSuccess: () => {
                     setSelectedProject('');
                     setSearchTerm('');
@@ -75,6 +84,7 @@ export function AddProjectDialog({ availableProjects }: AddProjectDialogProps) {
                 <button
                     type="button"
                     className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    disabled={!canAddProject}
                 >
                     <Plus className="size-4" />
                     Add project

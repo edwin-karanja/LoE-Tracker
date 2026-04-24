@@ -14,11 +14,17 @@ class UserProjectController extends Controller
 {
     public function store(StoreUserProjectRequest $request): RedirectResponse
     {
+        $validated = $request->validate([
+            'week' => ['nullable', 'date_format:Y-m-d'],
+        ]);
+
         $user = $request->user();
         $project = Project::query()->active()->findOrFail($request->integer('project_id'));
         $today = CarbonImmutable::today();
-        $weekStart = $today->startOfWeek(CarbonImmutable::MONDAY);
-        $weekEnd = $today->endOfWeek(CarbonImmutable::SUNDAY);
+        $weekStart = isset($validated['week'])
+            ? CarbonImmutable::parse($validated['week'])->startOfWeek(CarbonImmutable::MONDAY)
+            : $today->startOfWeek(CarbonImmutable::MONDAY);
+        $weekEnd = $weekStart->endOfWeek(CarbonImmutable::SUNDAY);
 
         DB::transaction(function () use ($project, $user, $weekEnd, $weekStart) {
             $assignment = $user->projectAssignments()
@@ -54,6 +60,8 @@ class UserProjectController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Project added to weekly pulse.')]);
 
-        return to_route('dashboard');
+        return redirect()->to(route('dashboard', [
+            'week' => $weekStart->toDateString(),
+        ]));
     }
 }

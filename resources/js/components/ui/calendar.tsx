@@ -13,7 +13,9 @@ function Calendar({
 }: React.ComponentProps<typeof DayPicker>) {
     return (
         <DayPicker
+            ISOWeek
             showOutsideDays={showOutsideDays}
+            showWeekNumber
             className={cn('relative p-3 pt-12', className)}
             classNames={{
                 months:
@@ -33,9 +35,13 @@ function Calendar({
                 ),
                 month_grid: 'w-full border-collapse space-y-1',
                 weekdays: 'flex',
+                week_number_header:
+                    'w-9 text-center text-[0.72rem] font-semibold text-teal-600',
                 weekday:
                     'text-slate-500 rounded-md w-9 font-normal text-[0.8rem]',
                 week: 'mt-2 flex w-full',
+                week_number:
+                    'flex h-9 w-9 items-center justify-center text-[0.78rem] font-semibold text-teal-600',
                 day: 'h-9 w-9 p-0 text-center text-sm relative',
                 day_button: cn(
                     buttonVariants({ variant: 'ghost' }),

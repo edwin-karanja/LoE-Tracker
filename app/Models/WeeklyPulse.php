@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'week_start_date', 'week_end_date', 'status', 'submitted_at'])]
+#[Fillable(['user_id', 'week_start_date', 'week_end_date', 'status', 'submitted_at', 'weekly_summary'])]
 class WeeklyPulse extends Model
 {
     public const STATUS_DRAFT = 'draft';

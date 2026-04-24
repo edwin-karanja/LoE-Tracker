@@ -20,8 +20,9 @@ type AllocationRow = {
 };
 
 type WeeklyPulse = {
-    id: number;
+    id: number | null;
     status: string;
+    weeklySummary: string | null;
 };
 
 type SubmitWeeklyPulseDialogProps = {
@@ -29,6 +30,7 @@ type SubmitWeeklyPulseDialogProps = {
     canSubmit: boolean;
     editableAllocations: Record<number, number>;
     hasUnsavedChanges: boolean;
+    reportingWeekStartDate: string;
     weeklyPulse: WeeklyPulse;
 };
 
@@ -37,10 +39,14 @@ export function SubmitWeeklyPulseDialog({
     canSubmit,
     editableAllocations,
     hasUnsavedChanges,
+    reportingWeekStartDate,
     weeklyPulse,
 }: SubmitWeeklyPulseDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [weeklySummary, setWeeklySummary] = useState(
+        weeklyPulse.weeklySummary ?? '',
+    );
 
     const buildPulseItemsPayload = () => ({
         items: allocationRows.map((row) => ({
@@ -54,6 +60,7 @@ export function SubmitWeeklyPulseDialog({
             return;
         }
 
+        setWeeklySummary(weeklyPulse.weeklySummary ?? '');
         setIsOpen(true);
     };
 
@@ -61,11 +68,21 @@ export function SubmitWeeklyPulseDialog({
         setIsSubmitting(true);
 
         if (hasUnsavedChanges) {
-            router.visit(updateWeeklyPulse(weeklyPulse.id), {
+            router.visit(updateWeeklyPulse(weeklyPulse.id!, {
+                query: {
+                    week: reportingWeekStartDate,
+                },
+            }), {
                 data: buildPulseItemsPayload(),
+                preserveState: false,
                 preserveScroll: true,
                 onSuccess: () => {
-                    router.visit(submitWeeklyPulse(weeklyPulse.id), {
+                    router.visit(submitWeeklyPulse(weeklyPulse.id!, {
+                        query: {
+                            week: reportingWeekStartDate,
+                        },
+                    }), {
+                        preserveState: false,
                         preserveScroll: true,
                         onFinish: () => {
                             setIsSubmitting(false);
@@ -84,7 +101,15 @@ export function SubmitWeeklyPulseDialog({
             return;
         }
 
-        router.visit(submitWeeklyPulse(weeklyPulse.id), {
+        router.visit(submitWeeklyPulse(weeklyPulse.id!, {
+            query: {
+                week: reportingWeekStartDate,
+            },
+        }), {
+            data: {
+                weekly_summary: weeklySummary,
+            },
+            preserveState: false,
             preserveScroll: true,
             onFinish: () => {
                 setIsSubmitting(false);
@@ -102,7 +127,7 @@ export function SubmitWeeklyPulseDialog({
                 disabled={!canSubmit || isSubmitting}
             >
                 <Send className="size-4" />
-                Submit week&apos;s pulse
+                Submit week&apos;s LoE
             </button>
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -115,7 +140,7 @@ export function SubmitWeeklyPulseDialog({
                                         <LockKeyhole className="size-6 text-slate-700" />
                                     </div>
                                     <DialogTitle className="text-2xl font-semibold tracking-tight text-slate-950">
-                                        Submit weekly pulse?
+                                        Submit weekly LoE?
                                     </DialogTitle>
                                 </div>
                                 <div className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-[0.68rem] font-semibold tracking-[0.24em] text-slate-700 uppercase">
@@ -132,25 +157,52 @@ export function SubmitWeeklyPulseDialog({
                         </DialogHeader>
 
                         <div className="px-7 py-6">
-                            <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 p-5">
-                                <div className="flex items-center gap-3">
-                                    <AlertTriangle className="size-5 text-amber-700" />
-                                    <p className="text-sm font-semibold tracking-[0.18em] text-amber-900 uppercase">
-                                        Submission notice
+                            <div className="space-y-5">
+                                <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 p-5">
+                                    <div className="flex items-center gap-3">
+                                        <AlertTriangle className="size-5 text-amber-700" />
+                                        <p className="text-sm font-semibold tracking-[0.18em] text-amber-900 uppercase">
+                                            Submission notice
+                                        </p>
+                                    </div>
+                                    <p className="mt-3 text-sm leading-6 text-slate-700">
+                                        Review your values carefully before
+                                        continuing. If you still need to refine the
+                                        allocation, keep this LoE in draft and
+                                        save it instead.
                                     </p>
+                                    {hasUnsavedChanges ? (
+                                        <p className="mt-3 text-sm font-medium text-amber-900">
+                                            Unsaved changes will be saved
+                                            automatically before submission.
+                                        </p>
+                                    ) : null}
                                 </div>
-                                <p className="mt-3 text-sm leading-6 text-slate-700">
-                                    Review your values carefully before
-                                    continuing. If you still need to refine the
-                                    allocation, keep this pulse in draft and
-                                    save it instead.
-                                </p>
-                                {hasUnsavedChanges ? (
-                                    <p className="mt-3 text-sm font-medium text-amber-900">
-                                        Unsaved changes will be saved
-                                        automatically before submission.
+
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="weekly-summary"
+                                        className="text-sm font-semibold text-slate-900"
+                                    >
+                                        Weekly summary
+                                    </label>
+                                    <p className="text-sm text-slate-500">
+                                        Add a brief summary of the work completed
+                                        this week to accompany your LoE submission.
                                     </p>
-                                ) : null}
+                                    <textarea
+                                        id="weekly-summary"
+                                        value={weeklySummary}
+                                        onChange={(event) =>
+                                            setWeeklySummary(event.target.value)
+                                        }
+                                        rows={5}
+                                        maxLength={5000}
+                                        disabled={isSubmitting}
+                                        className="min-h-32 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                                        placeholder="Summarize progress, notable deliverables, blockers, or any context that should accompany this week's submission."
+                                    />
+                                </div>
                             </div>
                         </div>
 

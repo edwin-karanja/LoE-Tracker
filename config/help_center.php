@@ -29,7 +29,7 @@ return [
             'summary' => 'Understand the difference between saving a draft and submitting your final weekly pulse.',
             'sections' => [
                 [
-                    'title' => 'Save changes',
+                    'title' => 'Save draft',
                     'content' => [
                         'Save changes stores your current LoE values as a draft for the selected week. You should use this whenever you are still refining allocations and do not want to finalize the week yet.',
                         'If the page shows an Unsaved changes badge, the current values have not been written to the backend yet.',

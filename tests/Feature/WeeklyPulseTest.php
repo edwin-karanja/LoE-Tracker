@@ -22,7 +22,10 @@ test('users can save allocations for their weekly pulse', function () {
         ]);
 
     $this->actingAs($user)
-        ->put(route('weekly-pulses.update', $weeklyPulse), [
+        ->put(route('weekly-pulses.update', [
+            'weeklyPulse' => $weeklyPulse,
+            'week' => $weeklyPulse->week_start_date->toDateString(),
+        ]), [
             'items' => [
                 [
                     'project_id' => $project->id,
@@ -30,7 +33,9 @@ test('users can save allocations for their weekly pulse', function () {
                 ],
             ],
         ])
-        ->assertRedirect(route('dashboard'));
+        ->assertRedirect(route('dashboard', [
+            'week' => $weeklyPulse->week_start_date->toDateString(),
+        ]));
 
     expect($weeklyPulse->fresh()->items()->first()?->allocation_percent)->toBe(100);
 });
@@ -46,9 +51,40 @@ test('users can submit a weekly pulse regardless of the current total allocation
     ]);
 
     $this->actingAs($user)
-        ->post(route('weekly-pulses.submit', $weeklyPulse))
-        ->assertRedirect(route('dashboard'));
+        ->post(route('weekly-pulses.submit', [
+            'weeklyPulse' => $weeklyPulse,
+            'week' => $weeklyPulse->week_start_date->toDateString(),
+        ]))
+        ->assertRedirect(route('dashboard', [
+            'week' => $weeklyPulse->week_start_date->toDateString(),
+        ]));
 
     expect($weeklyPulse->fresh()->status)->toBe(WeeklyPulse::STATUS_SUBMITTED)
         ->and($weeklyPulse->fresh()->submitted_at)->not->toBeNull();
+});
+
+test('users can submit a weekly summary with their weekly pulse', function () {
+    $user = User::factory()->create();
+    $project = Project::factory()->create();
+    $weeklyPulse = WeeklyPulse::factory()->for($user)->create();
+
+    $weeklyPulse->items()->create([
+        'project_id' => $project->id,
+        'allocation_percent' => 80,
+    ]);
+
+    $this->actingAs($user)
+        ->post(route('weekly-pulses.submit', [
+            'weeklyPulse' => $weeklyPulse,
+            'week' => $weeklyPulse->week_start_date->toDateString(),
+        ]), [
+            'weekly_summary' => 'Delivered assessment updates, supported client review, and documented follow-up actions.',
+        ])
+        ->assertRedirect(route('dashboard', [
+            'week' => $weeklyPulse->week_start_date->toDateString(),
+        ]));
+
+    expect($weeklyPulse->fresh()->weekly_summary)
+        ->toBe('Delivered assessment updates, supported client review, and documented follow-up actions.')
+        ->and($weeklyPulse->fresh()->status)->toBe(WeeklyPulse::STATUS_SUBMITTED);
 });

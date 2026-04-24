@@ -26,6 +26,7 @@ class WeeklyPulseFactory extends Factory
             'week_end_date' => $weekStart->copy()->addDays(6)->toDateString(),
             'status' => WeeklyPulse::STATUS_DRAFT,
             'submitted_at' => null,
+            'weekly_summary' => null,
         ];
     }
 }

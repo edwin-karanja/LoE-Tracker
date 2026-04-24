@@ -82,7 +82,7 @@ export function SubmissionDeadlineCard({
 
             <div className="mt-3.5 space-y-1.5">
                 <div className="flex items-end justify-between gap-3">
-                    <p className="text-[1.35rem] font-semibold tracking-tight text-slate-900">
+                    <p className="text-[1rem] font-semibold tracking-tight text-slate-900">
                         {formatCountdown(countdown)}
                     </p>
                     <span className="rounded-full bg-emerald-100 px-2 py-1 text-[0.62rem] font-semibold tracking-[0.18em] text-emerald-800 uppercase">
