@@ -33,9 +33,9 @@ class AdminProjectController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(): RedirectResponse
     {
-        return Inertia::render('Admin/Projects/Create');
+        return redirect()->route('admin.projects.index');
     }
 
     public function store(StoreProjectRequest $request): RedirectResponse
@@ -52,21 +52,12 @@ class AdminProjectController extends Controller
 
     public function show(Project $project): RedirectResponse
     {
-        return redirect()->route('admin.projects.edit', $project);
+        return redirect()->route('admin.projects.index');
     }
 
-    public function edit(Project $project): Response
+    public function edit(Project $project): RedirectResponse
     {
-        return Inertia::render('Admin/Projects/Edit', [
-            'project' => [
-                'id' => $project->id,
-                'name' => $project->name,
-                'code' => $project->code,
-                'stream' => $project->stream,
-                'description' => $project->description,
-                'isActive' => $project->is_active,
-            ],
-        ]);
+        return redirect()->route('admin.projects.index');
     }
 
     public function update(UpdateProjectRequest $request, Project $project): RedirectResponse

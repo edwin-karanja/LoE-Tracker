@@ -20,6 +20,19 @@ test('admins can view projects', function () {
         );
 });
 
+test('project create and edit screens redirect to the compact index workflow', function () {
+    $admin = User::factory()->admin()->create();
+    $project = Project::factory()->create();
+
+    $this->actingAs($admin)
+        ->get(route('admin.projects.create'))
+        ->assertRedirect(route('admin.projects.index'));
+
+    $this->actingAs($admin)
+        ->get(route('admin.projects.edit', $project))
+        ->assertRedirect(route('admin.projects.index'));
+});
+
 test('admins can create and update projects', function () {
     $admin = User::factory()->admin()->create();
 

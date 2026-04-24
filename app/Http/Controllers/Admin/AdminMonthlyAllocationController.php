@@ -25,6 +25,10 @@ class AdminMonthlyAllocationController extends Controller
 
         $month = $this->monthFromString($validated['month'] ?? now()->format('Y-m'));
         $monthKey = $month->format('Y-m');
+        $currentMonth = now()->startOfMonth();
+        $monthViewState = $month->lessThan($currentMonth)
+            ? 'past'
+            : ($month->greaterThan($currentMonth) ? 'future' : 'current');
 
         $users = User::query()
             ->orderBy('name')
@@ -63,6 +67,12 @@ class AdminMonthlyAllocationController extends Controller
 
         return Inertia::render('Admin/Allocations/Index', [
             'allocationValues' => $allocationValues,
+            'currentMonth' => [
+                'label' => $currentMonth->format('F Y'),
+                'value' => $currentMonth->format('Y-m'),
+            ],
+            'isViewingCurrentMonth' => $month->equalTo($currentMonth),
+            'monthViewState' => $monthViewState,
             'month' => [
                 'label' => $month->format('F Y'),
                 'value' => $monthKey,
@@ -91,17 +101,20 @@ class AdminMonthlyAllocationController extends Controller
 
                 $total = (int) $positiveAllocations->sum('allocation_percent');
 
-                $monthlyAllocation = MonthlyAllocation::query()->updateOrCreate(
-                    [
-                        'user_id' => $userId,
-                        'month' => $monthStart->toDateString(),
-                    ],
-                    [
-                        'total_allocation_percent' => $total,
-                        'availability_percent' => max(0, 100 - $total),
-                        'assigned_projects_count' => $positiveAllocations->count(),
-                    ],
-                );
+                $monthlyAllocation = MonthlyAllocation::query()
+                    ->where('user_id', $userId)
+                    ->whereDate('month', $monthStart->toDateString())
+                    ->firstOrNew();
+
+                $monthlyAllocation->fill([
+                    'user_id' => $userId,
+                    'month' => $monthStart->toDateString(),
+                    'total_allocation_percent' => $total,
+                    'availability_percent' => max(0, 100 - $total),
+                    'assigned_projects_count' => $positiveAllocations->count(),
+                ]);
+
+                $monthlyAllocation->save();
 
                 $monthlyAllocation->items()->delete();
 

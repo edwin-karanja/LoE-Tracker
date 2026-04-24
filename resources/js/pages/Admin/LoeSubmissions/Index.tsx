@@ -1,5 +1,13 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Eye } from 'lucide-react';
+import { Check, ChevronDown, Eye, Search, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 import { dashboard as adminDashboard } from '@/routes/admin';
 import {
     index as loeSubmissionsIndex,
@@ -38,18 +46,203 @@ type Props = {
     users: FilterOption[];
 };
 
+type SearchableFilterOption = {
+    label: string;
+    value: string;
+};
+
+type SearchableFilterProps = {
+    label: string;
+    onChange: (value: string) => void;
+    options: SearchableFilterOption[];
+    placeholder: string;
+    searchPlaceholder: string;
+    value: number | string;
+};
+
+function SearchableFilter({
+    label,
+    onChange,
+    options,
+    placeholder,
+    searchPlaceholder,
+    value,
+}: SearchableFilterProps) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const normalizedValue = String(value ?? '');
+    const selectedOption = options.find(
+        (option) => option.value === normalizedValue,
+    );
+
+    const filteredOptions = useMemo(() => {
+        const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+
+        if (!normalizedSearchTerm) {
+            return options;
+        }
+
+        return options.filter((option) =>
+            option.label.toLowerCase().includes(normalizedSearchTerm),
+        );
+    }, [options, searchTerm]);
+
+    return (
+        <label className="space-y-2">
+            <span className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
+                {label}
+            </span>
+            <Popover
+                open={isOpen}
+                onOpenChange={(nextIsOpen) => {
+                    setIsOpen(nextIsOpen);
+
+                    if (!nextIsOpen) {
+                        setSearchTerm('');
+                    }
+                }}
+            >
+                <PopoverTrigger asChild>
+                    <button
+                        type="button"
+                        className="flex h-10 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-left text-sm text-slate-700 outline-none transition hover:bg-slate-50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                    >
+                        <span
+                            className={
+                                selectedOption
+                                    ? 'truncate font-medium text-slate-800'
+                                    : 'truncate text-slate-400'
+                            }
+                        >
+                            {selectedOption?.label ?? placeholder}
+                        </span>
+                        <ChevronDown className="size-4 shrink-0 text-slate-400" />
+                    </button>
+                </PopoverTrigger>
+                <PopoverContent
+                    align="start"
+                    className="w-[--radix-popover-trigger-width] rounded-xl border-slate-200 bg-white p-2 shadow-lg"
+                >
+                    <div className="relative">
+                        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
+                        <Input
+                            value={searchTerm}
+                            onChange={(event) =>
+                                setSearchTerm(event.target.value)
+                            }
+                            placeholder={searchPlaceholder}
+                            className="h-9 rounded-lg border-slate-200 pl-9 text-sm shadow-none"
+                        />
+                    </div>
+
+                    <div className="mt-2 max-h-56 overflow-y-auto pr-1">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                onChange('');
+                                setIsOpen(false);
+                            }}
+                            className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
+                                !normalizedValue
+                                    ? 'bg-slate-100 font-medium text-slate-950'
+                                    : 'text-slate-600 hover:bg-slate-50'
+                            }`}
+                        >
+                            {placeholder}
+                            {!normalizedValue ? (
+                                <Check className="size-4 text-emerald-700" />
+                            ) : null}
+                        </button>
+
+                        {filteredOptions.length > 0 ? (
+                            filteredOptions.map((option) => {
+                                const isSelected =
+                                    option.value === normalizedValue;
+
+                                return (
+                                    <button
+                                        key={option.value}
+                                        type="button"
+                                        onClick={() => {
+                                            onChange(option.value);
+                                            setIsOpen(false);
+                                        }}
+                                        className={`mt-1 flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
+                                            isSelected
+                                                ? 'bg-emerald-50 font-medium text-emerald-900'
+                                                : 'text-slate-600 hover:bg-slate-50'
+                                        }`}
+                                    >
+                                        <span className="truncate">
+                                            {option.label}
+                                        </span>
+                                        {isSelected ? (
+                                            <Check className="size-4 shrink-0 text-emerald-700" />
+                                        ) : null}
+                                    </button>
+                                );
+                            })
+                        ) : (
+                            <div className="mt-2 rounded-lg border border-dashed border-slate-200 px-3 py-4 text-center text-sm text-slate-500">
+                                No matches found.
+                            </div>
+                        )}
+                    </div>
+                </PopoverContent>
+            </Popover>
+        </label>
+    );
+}
+
 export default function AdminLoeSubmissionsIndex({
     filters,
     projects,
     submissions,
     users,
 }: Props) {
+    const hasSelectedFilters = Boolean(
+        filters.status || filters.user || filters.project,
+    );
+
+    const statusOptions = [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Submitted', value: 'submitted' },
+    ];
+
+    const userOptions = users.map((user) => ({
+        label: user.name,
+        value: String(user.id),
+    }));
+
+    const projectOptions = projects.map((project) => ({
+        label: project.name,
+        value: String(project.id),
+    }));
+
     const updateFilter = (key: keyof Props['filters'], value: string) => {
         router.visit(
             loeSubmissionsIndex({
                 query: {
                     ...filters,
                     [key]: value || undefined,
+                },
+            }),
+            {
+                preserveScroll: true,
+                preserveState: false,
+            },
+        );
+    };
+
+    const clearFilters = () => {
+        if (!hasSelectedFilters) {
+            return;
+        }
+
+        router.visit(
+            loeSubmissionsIndex({
+                query: {
+                    month: filters.month,
                 },
             }),
             {
@@ -74,7 +267,7 @@ export default function AdminLoeSubmissionsIndex({
                         </p>
                     </section>
 
-                    <section className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-4">
+                    <section className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
                         <label className="space-y-2">
                             <span className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
                                 Month
@@ -88,60 +281,44 @@ export default function AdminLoeSubmissionsIndex({
                                 className="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
                             />
                         </label>
-                        <label className="space-y-2">
-                            <span className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
-                                Status
-                            </span>
-                            <select
-                                value={filters.status}
-                                onChange={(event) =>
-                                    updateFilter('status', event.target.value)
-                                }
-                                className="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                        <SearchableFilter
+                            label="Status"
+                            value={filters.status}
+                            options={statusOptions}
+                            placeholder="All statuses"
+                            searchPlaceholder="Search statuses"
+                            onChange={(value) => updateFilter('status', value)}
+                        />
+                        <SearchableFilter
+                            label="Member"
+                            value={filters.user}
+                            options={userOptions}
+                            placeholder="All members"
+                            searchPlaceholder="Search members"
+                            onChange={(value) => updateFilter('user', value)}
+                        />
+                        <SearchableFilter
+                            label="Project"
+                            value={filters.project}
+                            options={projectOptions}
+                            placeholder="All projects"
+                            searchPlaceholder="Search projects"
+                            onChange={(value) =>
+                                updateFilter('project', value)
+                            }
+                        />
+                        <div className="flex items-end">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={clearFilters}
+                                disabled={!hasSelectedFilters}
+                                className="h-10 w-full border-slate-200 text-slate-600 hover:bg-slate-50 xl:w-auto"
                             >
-                                <option value="">All statuses</option>
-                                <option value="draft">Draft</option>
-                                <option value="submitted">Submitted</option>
-                            </select>
-                        </label>
-                        <label className="space-y-2">
-                            <span className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
-                                Member
-                            </span>
-                            <select
-                                value={filters.user}
-                                onChange={(event) =>
-                                    updateFilter('user', event.target.value)
-                                }
-                                className="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-                            >
-                                <option value="">All members</option>
-                                {users.map((user) => (
-                                    <option key={user.id} value={user.id}>
-                                        {user.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                        <label className="space-y-2">
-                            <span className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
-                                Project
-                            </span>
-                            <select
-                                value={filters.project}
-                                onChange={(event) =>
-                                    updateFilter('project', event.target.value)
-                                }
-                                className="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-                            >
-                                <option value="">All projects</option>
-                                {projects.map((project) => (
-                                    <option key={project.id} value={project.id}>
-                                        {project.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
+                                <X className="size-4" />
+                                Clear
+                            </Button>
+                        </div>
                     </section>
 
                     <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
