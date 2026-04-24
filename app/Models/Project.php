@@ -15,6 +15,13 @@ class Project extends Model
     /** @use HasFactory<ProjectFactory> */
     use HasFactory;
 
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);

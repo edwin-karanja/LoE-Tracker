@@ -4,6 +4,7 @@ import {
     CalendarRange,
     HelpCircle,
     LayoutGrid,
+    ShieldCheck,
 } from 'lucide-react';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -19,6 +20,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, helpCenter, myAllocations } from '@/routes';
+import { dashboard as adminDashboard } from '@/routes/admin';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -53,9 +55,19 @@ const quickActionItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props;
     const currentPath = usePage().url.split('?')[0];
     const isCurrentItem = (href: NavItem['href']) =>
         currentPath === (typeof href === 'string' ? href : href.url);
+    const adminNavItems: NavItem[] = auth.user?.is_admin
+        ? [
+              {
+                  title: 'Admin',
+                  href: adminDashboard(),
+                  icon: ShieldCheck,
+              },
+          ]
+        : [];
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -92,11 +104,15 @@ export function AppSidebar() {
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {mainNavItems.map((item) => (
+                            {[...mainNavItems, ...adminNavItems].map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         asChild
-                                        isActive={isCurrentItem(item.href)}
+                                        isActive={
+                                            item.title === 'Admin'
+                                                ? currentPath.startsWith('/admin')
+                                                : isCurrentItem(item.href)
+                                        }
                                         tooltip={{ children: item.title }}
                                         className="h-11 rounded-xl px-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 data-[active=true]:border data-[active=true]:border-slate-200 data-[active=true]:bg-white data-[active=true]:text-slate-900 data-[active=true]:shadow-sm"
                                     >
