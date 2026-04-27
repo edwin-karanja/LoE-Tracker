@@ -76,6 +76,8 @@ type WeeklyPulse = {
 };
 
 type Props = {
+    /** Projects the user may record LoE for in the selected week (saves to weekly pulse). */
+    assignedProjectIdsForSelectedWeek: number[];
     allocationRows: AllocationRow[];
     availableProjects: AvailableProject[];
     reportingPeriod: ReportingPeriod;
@@ -128,6 +130,7 @@ function previewWeeklySummary(summary: string): string {
 }
 
 export default function DashboardShowcase({
+    assignedProjectIdsForSelectedWeek,
     allocationRows,
     availableProjects,
     reportingPeriod,
@@ -210,10 +213,11 @@ export default function DashboardShowcase({
     );
 
     const currentWeekTotalPercent = summary.currentWeekTotalPercent ?? 0;
-    const isDirty = allocationRows.some(
-        (row) =>
-            (editableAllocations[row.projectId] ?? 0) !==
-            (savedAllocationsForSelectedWeek[row.projectId] ?? 0),
+    const assignedProjectIdSet = new Set(assignedProjectIdsForSelectedWeek);
+    const isDirty = assignedProjectIdsForSelectedWeek.some(
+        (projectId) =>
+            (editableAllocations[projectId] ?? 0) !==
+            (savedAllocationsForSelectedWeek[projectId] ?? 0),
     );
     const pulseStatusLabel =
         weeklyPulse.status === 'submitted' ? 'Submitted' : 'Draft';
@@ -227,6 +231,8 @@ export default function DashboardShowcase({
         reportingPeriod.isCurrentWeek &&
         weeklyPulse.id !== null &&
         weeklyPulse.status !== 'submitted';
+    const canEditProjectForSelectedWeek = (projectId: number): boolean =>
+        canEditSelectedWeek && assignedProjectIdSet.has(projectId);
 
     const clampAllocation = (value: number): number =>
         Math.max(0, Math.min(100, value));
@@ -256,7 +262,11 @@ export default function DashboardShowcase({
     };
 
     const handleSaveWeeklyPulse = () => {
-        if (!canEditSelectedWeek || weeklyPulse.id === null) {
+        if (
+            !canEditSelectedWeek ||
+            weeklyPulse.id === null ||
+            assignedProjectIdsForSelectedWeek.length === 0
+        ) {
             return;
         }
 
@@ -266,11 +276,13 @@ export default function DashboardShowcase({
             }),
             {
                 data: {
-                    items: allocationRows.map((row) => ({
-                        allocation_percent:
-                            editableAllocations[row.projectId] ?? 0,
-                        project_id: row.projectId,
-                    })),
+                    items: assignedProjectIdsForSelectedWeek.map(
+                        (projectId) => ({
+                            allocation_percent:
+                                editableAllocations[projectId] ?? 0,
+                            project_id: projectId,
+                        }),
+                    ),
                 },
                 preserveState: false,
                 preserveScroll: true,
@@ -468,7 +480,8 @@ export default function DashboardShowcase({
                                             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
                                             onClick={handleSaveWeeklyPulse}
                                             disabled={
-                                                allocationRows.length === 0 ||
+                                                assignedProjectIdsForSelectedWeek
+                                                    .length === 0 ||
                                                 !canEditSelectedWeek ||
                                                 !isDirty
                                             }
@@ -479,11 +492,16 @@ export default function DashboardShowcase({
                                         <TooltipHint content="Save your current edits as a draft in the backend without submitting the weekly pulse yet." />
                                     </div>
                                     <SubmitWeeklyPulseDialog
-                                        allocationRows={allocationRows}
+                                        assignedProjectIdsForSelectedWeek={
+                                            assignedProjectIdsForSelectedWeek
+                                        }
                                         canSubmit={
                                             reportingPeriod.isCurrentWeek &&
                                             weeklyPulse.id !== null &&
-                                            weeklyPulse.status !== 'submitted'
+                                            weeklyPulse.status !==
+                                                'submitted' &&
+                                            assignedProjectIdsForSelectedWeek.length >
+                                                0
                                         }
                                         editableAllocations={
                                             editableAllocations
@@ -584,6 +602,33 @@ export default function DashboardShowcase({
                                                                 ] ?? null;
 
                                                             if (isSelected) {
+                                                                if (
+                                                                    !assignedProjectIdSet.has(
+                                                                        row.projectId,
+                                                                    )
+                                                                ) {
+                                                                    return (
+                                                                        <td
+                                                                            key={`${row.projectId}-${week.start.toISOString()}`}
+                                                                            className="border-x border-slate-200 bg-slate-50/70 px-2 py-2 text-center text-xs font-medium sm:px-3 sm:text-sm"
+                                                                        >
+                                                                            <span
+                                                                                className={
+                                                                                    value ===
+                                                                                    null
+                                                                                        ? 'text-slate-300'
+                                                                                        : 'text-slate-500'
+                                                                                }
+                                                                            >
+                                                                                {value ===
+                                                                                null
+                                                                                    ? '-'
+                                                                                    : `${value}%`}
+                                                                            </span>
+                                                                        </td>
+                                                                    );
+                                                                }
+
                                                                 return (
                                                                     <td
                                                                         key={`${row.projectId}-${week.start.toISOString()}`}
@@ -595,7 +640,9 @@ export default function DashboardShowcase({
                                                                                 className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50"
                                                                                 aria-label={`Decrease ${row.project} allocation`}
                                                                                 disabled={
-                                                                                    !canEditSelectedWeek
+                                                                                    !canEditProjectForSelectedWeek(
+                                                                                        row.projectId,
+                                                                                    )
                                                                                 }
                                                                                 onClick={() =>
                                                                                     updateAllocation(
@@ -620,7 +667,9 @@ export default function DashboardShowcase({
                                                                                         selectedWeekValue
                                                                                     }
                                                                                     disabled={
-                                                                                        !canEditSelectedWeek
+                                                                                        !canEditProjectForSelectedWeek(
+                                                                                            row.projectId,
+                                                                                        )
                                                                                     }
                                                                                     onChange={(
                                                                                         event,
@@ -644,7 +693,9 @@ export default function DashboardShowcase({
                                                                                 className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50"
                                                                                 aria-label={`Increase ${row.project} allocation`}
                                                                                 disabled={
-                                                                                    !canEditSelectedWeek
+                                                                                    !canEditProjectForSelectedWeek(
+                                                                                        row.projectId,
+                                                                                    )
                                                                                 }
                                                                                 onClick={() =>
                                                                                     updateAllocation(
@@ -658,13 +709,18 @@ export default function DashboardShowcase({
                                                                             </button>
                                                                         </div>
                                                                         {rowIndex ===
-                                                                        0 ? (
+                                                                            allocationRows.findIndex(
+                                                                                (r) =>
+                                                                                    assignedProjectIdSet.has(
+                                                                                        r.projectId,
+                                                                                    ),
+                                                                            ) ? (
                                                                             <div className="mt-1.5 flex items-center justify-center gap-1">
                                                                                 <span className="text-[0.62rem] font-medium text-slate-400">
                                                                                     Editable
                                                                                     week
                                                                                 </span>
-                                                                                <TooltipHint content="Use the minus and plus buttons to adjust in 5% steps, or type directly into the field. Save changes to store the draft in the backend." />
+                                                                                <TooltipHint content="Use the minus and plus buttons to adjust in 5% steps, or type directly into the field. Save changes to store the draft in the backend. Only projects you are assigned to for this week can be edited here." />
                                                                             </div>
                                                                         ) : null}
                                                                     </td>
@@ -722,12 +778,11 @@ export default function DashboardShowcase({
                                                             selectedWeekStart,
                                                         );
                                                     const total = isSelected
-                                                        ? allocationRows.reduce(
-                                                            (sum, row) =>
+                                                        ? assignedProjectIdsForSelectedWeek.reduce(
+                                                            (sum, projectId) =>
                                                                 sum +
                                                                 (editableAllocations[
-                                                                    row
-                                                                        .projectId
+                                                                    projectId
                                                                 ] ?? 0),
                                                             0,
                                                         )

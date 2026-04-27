@@ -15,10 +15,6 @@ import {
     update as updateWeeklyPulse,
 } from '@/routes/weekly-pulses';
 
-type AllocationRow = {
-    projectId: number;
-};
-
 type WeeklyPulse = {
     id: number | null;
     status: string;
@@ -26,7 +22,7 @@ type WeeklyPulse = {
 };
 
 type SubmitWeeklyPulseDialogProps = {
-    allocationRows: AllocationRow[];
+    assignedProjectIdsForSelectedWeek: number[];
     canSubmit: boolean;
     editableAllocations: Record<number, number>;
     hasUnsavedChanges: boolean;
@@ -35,7 +31,7 @@ type SubmitWeeklyPulseDialogProps = {
 };
 
 export function SubmitWeeklyPulseDialog({
-    allocationRows,
+    assignedProjectIdsForSelectedWeek,
     canSubmit,
     editableAllocations,
     hasUnsavedChanges,
@@ -49,9 +45,9 @@ export function SubmitWeeklyPulseDialog({
     );
 
     const buildPulseItemsPayload = () => ({
-        items: allocationRows.map((row) => ({
-            allocation_percent: editableAllocations[row.projectId] ?? 0,
-            project_id: row.projectId,
+        items: assignedProjectIdsForSelectedWeek.map((projectId) => ({
+            allocation_percent: editableAllocations[projectId] ?? 0,
+            project_id: projectId,
         })),
     });
 

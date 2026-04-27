@@ -87,6 +87,11 @@ class DashboardController extends Controller
             ->activeDuring($reportingWeekStart, $reportingWeekEnd)
             ->pluck('project_id');
 
+        $assignedProjectIdsForSelectedWeek = $selectedWeekAssignments
+            ->map(fn (mixed $id) => (int) $id)
+            ->values()
+            ->all();
+
         $submissionDeadline = $this->resolveSubmissionDeadline(
             $selectedPulse ?? new WeeklyPulse([
                 'status' => WeeklyPulse::STATUS_DRAFT,
@@ -113,6 +118,7 @@ class DashboardController extends Controller
             ->all();
 
         return Inertia::render('dashboard', [
+            'assignedProjectIdsForSelectedWeek' => $assignedProjectIdsForSelectedWeek,
             'availableProjects' => $availableProjects,
             'allocationRows' => $allocationRows,
             'reportingPeriod' => [
